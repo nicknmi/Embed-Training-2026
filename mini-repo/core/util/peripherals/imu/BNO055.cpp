@@ -63,6 +63,7 @@ BNO055::BNO055(I2C &i2c, uint8_t addr, PinName p_reset=NC) noexcept
 void BNO055::init() noexcept {
     _i2c.frequency(100);
 
+    // set to normal mode
     dt[0] = PWR_MODE;
     dt[1] = 0;
     int writeResult = _i2c.write(chip_addr, dt, 1);
@@ -72,7 +73,7 @@ void BNO055::init() noexcept {
     ThisThread::sleep_for(400); // 400ms from start-up to config mode
 
     dt[0] = OPR_MODE;
-    dt[1] = 0b0111;
+    dt[1] = OPR_MODE_AMG;
     writeResult = _i2c.write(chip_addr, dt, 1); // set AMG mode (enables accel, mag, gyro (non fusion))
     if (!writeResult) return;
 }
@@ -88,10 +89,10 @@ void BNO055::reset() noexcept {
 
     // after reset, IMU switches to config, so switch back to AMG
     dt[0] = OPR_MODE;
-    dt[1] = 0b0111;
-    int writeResult = _i2c.write(chip_addr, dt, 1); 
-    
-    // todo: handle 
+    dt[1] = OPR_MODE_AMG;
+    int writeResult = _i2c.write(chip_addr, dt, 1);
+
+    // todo: handle
     if (!writeResult) return;
 }
 
@@ -159,6 +160,49 @@ void BNO055::get_gyro(BNO055_VECTOR_TypeDef *gr) {
         gr->x = (double) x;
         gr->y = (double) y;
         gr->z = (double) z;
+    } else {
+        cantReadDataCount++;
+    }
+}
+
+// todo
+void BNO055::change_fusion_mode(uint8_t mode) {
+    dt[0] = OPR_MODE;
+    dt[1] = mode;
+
+    int writeResult = _i2c.write(chip_addr, dt, 1);
+    if (!writeResult) return;
+}
+
+IMU::EulerAngles BNO055::read() {
+
+}
+
+IMU::EulerAngles BNO055::getImuAngles() {
+    if (cantReadDataCount > 0 && cantReadDataCount < 50) {
+        cantReadDataCount++;
+    } else if (cantReadDataCount >= 50) {
+        cantReadDataCount = 1;
+    }
+    int16_t heading, roll, pitch;
+
+    dt[0] = BNO055_EUL_HEADING_LSB;
+    int writeResult = _i2c.write(chip_addr, dt, 1);
+
+    if (!writeResult) {
+        if (cantReadDataCount > 0) {
+            printf("RESET IMU\n");
+            reset();
+            cantReadDataCount = 0;
+        }
+
+        _i2c.read(chip_addr, dt, 6);
+
+        heading = dt[1] << 8 | dt[0];
+        roll = dt[3] << 8 | dt[2];
+        pitch = dt[5] << 8 | dt[4];
+
+        return IMU::EulerAngles {(float)heading, (float)pitch, (float)roll};
     } else {
         cantReadDataCount++;
     }
