@@ -1,5 +1,5 @@
 // THIS IS THE HEADER FOR YOUR WEEK 2 ASSIGNMENT. DO NOT CHANGE ANYTHING ALREADY WRITTEN, BUT YOU ARE FREE TO ADD YOUR OWN FUNCTIONS
-// Make sure to implement all functions listed 
+// Make sure to implement all functions listed
 #ifndef BNO055_H
 #define BNO055_H
 
@@ -34,10 +34,10 @@ public:
     public:
     BNO055(I2C &i2c, uint8_t addr) noexcept; // Constructor taking in i2c object and address
 
-    BNO055(I2C &i2c, uint8_t addr, PinName p_reset) noexcept; // Overloaded to take a specific reset pin 
+    BNO055(I2C &i2c, uint8_t addr, PinName p_reset) noexcept; // Overloaded to take a specific reset pin
                                                               // Implement both of these in the cpp
 
-    void init() noexcept; // Initialize the BNO055    
+    void init() noexcept; // Initialize the BNO055
 
     void reset() noexcept; // Quickly reset the BNO055
 
@@ -77,8 +77,8 @@ protected:
     I2C &_i2c;
     DigitalOut _res;   // working buffer
     uint8_t  chip_addr;
-    int cantReadDataCount;    
-    
+    int cantReadDataCount;
+
 private:
 
     char     dt[10];      // working buffer
@@ -89,5 +89,19 @@ private:
 
 // Quaternion data registers
 #define BNO055_QUATERNION_W_LSB 0x20
+
+// Linear Acceleration data registers
+#define BNO055_LINACCEL_X_LSB 0x28
+
+// Gyroscope data registers
+#define BNO055_GYRO_X_LSB 0x14
+
+// Power mode register
+// Normal: 00b  Low PWR: 01b  Suspend: 10b
+#define PWR_MODE 0x3E
+
+// Operation Mode Register
+// Determines what sensor signals are active and determines if fusion mode is on/off
+#define OPR_MODE 0x3D
 
 #endif

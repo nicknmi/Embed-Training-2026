@@ -12,3 +12,5 @@ Release/
 build/
 out/
 compile_commands.json
+.cache/*
+mini-repo/.cache/*
