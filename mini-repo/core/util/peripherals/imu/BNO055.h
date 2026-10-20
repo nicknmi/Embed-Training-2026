@@ -104,7 +104,6 @@ private:
 // Determines what sensor signals are active and determines if fusion mode is on/off
 // AMG (accel, mag, gyro), NDOF (accel, mag, gyro, fusion absolute)
 #define OPR_MODE 0x3D
-#define OPR_MODE_AMG 0x07
 #define OPR_MODE_NDOF 0x0C
 
 // Euler angles data registers

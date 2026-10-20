@@ -73,8 +73,8 @@ void BNO055::init() noexcept {
     ThisThread::sleep_for(400); // 400ms from start-up to config mode
 
     dt[0] = OPR_MODE;
-    dt[1] = OPR_MODE_AMG;
-    writeResult = _i2c.write(chip_addr, dt, 1); // set AMG mode (enables accel, mag, gyro (non fusion))
+    dt[1] = OPR_MODE_NDOF;
+    writeResult = _i2c.write(chip_addr, dt, 1); // set NDOF mode
     if (!writeResult) return;
 }
 
@@ -87,9 +87,9 @@ void BNO055::reset() noexcept {
     _res.write(1);
     ThisThread::sleep_for(650);
 
-    // after reset, IMU switches to config, so switch back to AMG
+    // after reset, IMU switches to config, so switch back to NDOF
     dt[0] = OPR_MODE;
-    dt[1] = OPR_MODE_AMG;
+    dt[1] = OPR_MODE_NDOF;
     int writeResult = _i2c.write(chip_addr, dt, 1);
 
     // todo: handle
