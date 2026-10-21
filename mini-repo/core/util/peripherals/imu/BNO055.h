@@ -57,7 +57,8 @@ public:
       */
     void change_fusion_mode(uint8_t mode);
 
-    IMU::EulerAngles read() override;
+    IMU::EulerAngles read() override; // get accel, gyro, yaw pitch heading
+                                      // reads everything
 
     IMU::EulerAngles getImuAngles() override;
 
@@ -99,14 +100,19 @@ private:
 // Power mode register
 // Normal: 00b  Low PWR: 01b  Suspend: 10b
 #define PWR_MODE 0x3E
+#define PWR_MODE_NORMAL 0
 
 // Operation Mode Register
 // Determines what sensor signals are active and determines if fusion mode is on/off
-// AMG (accel, mag, gyro), NDOF (accel, mag, gyro, fusion absolute)
+// NDOF (accel, mag, gyro, fusion absolute)
 #define OPR_MODE 0x3D
 #define OPR_MODE_NDOF 0x0C
 
 // Euler angles data registers
 #define BNO055_EUL_HEADING_LSB 0x1A
+
+// Reset SYS Register
+#define SYS_TRIGGER 0x3F
+
 
 #endif

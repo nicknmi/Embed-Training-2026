@@ -63,37 +63,46 @@ BNO055::BNO055(I2C &i2c, uint8_t addr, PinName p_reset=NC) noexcept
 void BNO055::init() noexcept {
     _i2c.frequency(100);
 
-    // set to normal mode
     dt[0] = PWR_MODE;
-    dt[1] = 0;
+    dt[1] = PWR_MODE_NORMAL;
     int writeResult = _i2c.write(chip_addr, dt, 1);
     // todo: handle write fail
-    if (!writeResult) return;
+    if (writeResult) return;
 
     ThisThread::sleep_for(400); // 400ms from start-up to config mode
 
+    // by default, after startup imu enters config mode, so change to ndof
     dt[0] = OPR_MODE;
     dt[1] = OPR_MODE_NDOF;
-    writeResult = _i2c.write(chip_addr, dt, 1); // set NDOF mode
-    if (!writeResult) return;
+    writeResult = _i2c.write(chip_addr, dt, 1);
+    if (writeResult) return;
 }
 
 void BNO055::reset() noexcept {
+    int writeResult;
     // todo: handle no reset pin defined
-    if (_res == NC) return;
+    if (_res != NC) {
+        dt[0] = SYS_TRIGGER;
+        dt[1] = 0b10000;
+        writeResult = _i2c.write(chip_addr, dt, 1);
 
-    _res.write(0);
-    ThisThread::sleep_for(1);
-    _res.write(1);
+        // todo: handle write err
+        if (writeResult) return;
+    } else {
+        _res.write(0);
+        ThisThread::sleep_for(1);
+        _res.write(1);
+    }
+
     ThisThread::sleep_for(650);
 
     // after reset, IMU switches to config, so switch back to NDOF
     dt[0] = OPR_MODE;
     dt[1] = OPR_MODE_NDOF;
-    int writeResult = _i2c.write(chip_addr, dt, 1);
+    writeResult = _i2c.write(chip_addr, dt, 1);
 
     // todo: handle
-    if (!writeResult) return;
+    if (writeResult) return;
 }
 
 
