@@ -184,39 +184,12 @@ void BNO055::change_fusion_mode(uint8_t mode) {
 }
 
 IMU::EulerAngles BNO055::read() {
+    IMU::EulerAngles res{};
 
+    get_angular_position_quat(&res);
+    return res;
 }
 
 IMU::EulerAngles BNO055::getImuAngles() {
-    if (cantReadDataCount > 0 && cantReadDataCount < 50) {
-        cantReadDataCount++;
-    } else if (cantReadDataCount >= 50) {
-        cantReadDataCount = 1;
-    }
-    int16_t heading, roll, pitch;
-
-    dt[0] = BNO055_EUL_HEADING_LSB;
-    int writeResult = _i2c.write(chip_addr, dt, 1);
-
-    if (!writeResult) {
-        if (cantReadDataCount > 0) {
-            printf("RESET IMU\n");
-            reset();
-            cantReadDataCount = 0;
-        }
-
-        _i2c.read(chip_addr, dt, 6);
-
-        heading = dt[1] << 8 | dt[0];
-        roll = dt[3] << 8 | dt[2];
-        pitch = dt[5] << 8 | dt[4];
-
-        return IMU::EulerAngles {
-            (float)heading / 16384.0f,
-            (float)pitch / 16384.0f,
-            (float)roll / 16384.0f
-        };
-    } else {
-        cantReadDataCount++;
-    }
+    return this->imuAngles;
 }
