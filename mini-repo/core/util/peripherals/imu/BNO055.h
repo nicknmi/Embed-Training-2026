@@ -57,10 +57,9 @@ public:
       */
     void change_fusion_mode(uint8_t mode);
 
-    IMU::EulerAngles read() override; // get accel, gyro, yaw pitch heading
-                                      // reads everything
+    IMU::EulerAngles read() override; // update internal imu angles
 
-    IMU::EulerAngles getImuAngles() override;
+    IMU::EulerAngles getImuAngles() override; // return imu angles to caller
 
     /** Get Quaternion XYZ&W
      * @param int16_t type of 4D data address
@@ -107,9 +106,6 @@ private:
 // NDOF (accel, mag, gyro, fusion absolute)
 #define OPR_MODE 0x3D
 #define OPR_MODE_NDOF 0x0C
-
-// Euler angles data registers
-#define BNO055_EUL_HEADING_LSB 0x1A
 
 // Reset SYS Register
 #define SYS_TRIGGER 0x3F
