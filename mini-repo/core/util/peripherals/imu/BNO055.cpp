@@ -1,5 +1,6 @@
 #include "BNO055.h"
 #include "thisThread.cpp"
+#include <cstdio>
 
 
 /*
@@ -66,8 +67,10 @@ void BNO055::init() noexcept {
     dt[0] = PWR_MODE;
     dt[1] = PWR_MODE_NORMAL;
     int writeResult = _i2c.write(chip_addr, dt, 1);
-    // todo: handle write fail
-    if (writeResult) return;
+    if (writeResult) {
+        printf("INIT FAIL");
+        return;
+    }
 
     ThisThread::sleep_for(400); // 400ms from start-up to config mode
 
@@ -75,19 +78,18 @@ void BNO055::init() noexcept {
     dt[0] = OPR_MODE;
     dt[1] = OPR_MODE_NDOF;
     writeResult = _i2c.write(chip_addr, dt, 1);
-    if (writeResult) return;
+    if (writeResult) printf("FAILED TO SWITCH TO NDOF");
 }
 
 void BNO055::reset() noexcept {
     int writeResult;
-    // todo: handle no reset pin defined
+    // fall back to reset bit on register if reset pin isn't available
     if (_res != NC) {
         dt[0] = SYS_TRIGGER;
         dt[1] = 0b10000;
         writeResult = _i2c.write(chip_addr, dt, 1);
 
-        // todo: handle write err
-        if (writeResult) return;
+        if (writeResult) printf("RESET FAIL");
     } else {
         _res.write(0);
         ThisThread::sleep_for(1);
@@ -101,8 +103,7 @@ void BNO055::reset() noexcept {
     dt[1] = OPR_MODE_NDOF;
     writeResult = _i2c.write(chip_addr, dt, 1);
 
-    // todo: handle
-    if (writeResult) return;
+    if (writeResult) printf("FAILED TO SWITCH TO NDOF");
 }
 
 
@@ -125,7 +126,7 @@ void BNO055::get_accel(BNO055_VECTOR_TypeDef *la) {
             reset();
             cantReadDataCount = 0;
         }
-        // todo: figure out accelerometer offset(?)
+
         _i2c.read(chip_addr, dt, 6);
 
         x = dt[1] << 8 | dt[0]; // dt[0] is lin accel lsb, dt[1] is lin accel msb, etc
@@ -159,7 +160,7 @@ void BNO055::get_gyro(BNO055_VECTOR_TypeDef *gr) {
             reset();
             cantReadDataCount = 0;
         }
-        // todo: figure out gyro offset(?)
+
         _i2c.read(chip_addr, dt, 6);
 
         x = dt[1] << 8 | dt[0];
@@ -180,7 +181,7 @@ void BNO055::change_fusion_mode(uint8_t mode) {
     dt[1] = mode;
 
     int writeResult = _i2c.write(chip_addr, dt, 1);
-    if (writeResult) return;
+    if (writeResult) printf("FUSION MODE CHANGE FAIL");
 }
 
 IMU::EulerAngles BNO055::read() {
