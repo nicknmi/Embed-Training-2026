@@ -180,7 +180,7 @@ void BNO055::change_fusion_mode(uint8_t mode) {
     dt[1] = mode;
 
     int writeResult = _i2c.write(chip_addr, dt, 1);
-    if (!writeResult) return;
+    if (writeResult) return;
 }
 
 IMU::EulerAngles BNO055::read() {
@@ -211,7 +211,11 @@ IMU::EulerAngles BNO055::getImuAngles() {
         roll = dt[3] << 8 | dt[2];
         pitch = dt[5] << 8 | dt[4];
 
-        return IMU::EulerAngles {(float)heading, (float)pitch, (float)roll};
+        return IMU::EulerAngles {
+            (float)heading / 16384.0f,
+            (float)pitch / 16384.0f,
+            (float)roll / 16384.0f
+        };
     } else {
         cantReadDataCount++;
     }
