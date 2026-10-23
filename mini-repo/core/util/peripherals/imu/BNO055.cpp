@@ -58,7 +58,7 @@ void BNO055::get_angular_position_quat(IMU::EulerAngles *result){
 
 
 BNO055::BNO055(I2C &i2c, uint8_t addr, PinName p_reset=NC) noexcept
-    : _i2c_p(&i2c), _i2c(i2c), chip_addr(addr), _res(p_reset), cantReadDataCount()
+    : _i2c_p(&i2c), _i2c(i2c), _res(p_reset), chip_addr(addr), cantReadDataCount()
 {}
 
 void BNO055::init() noexcept {
