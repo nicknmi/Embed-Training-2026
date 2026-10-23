@@ -175,7 +175,6 @@ void BNO055::get_gyro(BNO055_VECTOR_TypeDef *gr) {
     }
 }
 
-// todo
 void BNO055::change_fusion_mode(uint8_t mode) {
     dt[0] = OPR_MODE;
     dt[1] = mode;
