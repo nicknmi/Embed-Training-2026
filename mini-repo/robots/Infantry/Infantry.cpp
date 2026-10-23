@@ -172,8 +172,8 @@ class Infantry : public BaseRobot {
         imuAngles = imu_.getImuAngles();
         max_linear_vel = MAX_VEL;
         // TODO: What should these be instead of zero? 
-        des_chassis_state.vX = 0;
-        des_chassis_state.vY = 0;
+        des_chassis_state.vX = max_linear_vel * jy;
+        des_chassis_state.vY = max_linear_vel * jx;
 
         // Read jetson
         // jetson_state = jetson.read();
@@ -199,7 +199,17 @@ class Infantry : public BaseRobot {
 
         // Chassis logic
         // TODO: ADD THE CHASSIS LOGIC HERE
+        switch (remote_.getMode()) {
+            case (DJIRemote2::ModeSwitch::MODE_N): {
+                chassis_.setChassisSpeeds(, ChassisSubsystem::DRIVE_MODE::ROBOT_ORIENTED);
+                break;
+            }
+            case (DJIRemote2::ModeSwitch::MODE_S): break; // todo
+            default:
+                chassis_.setWheelSpeeds({0,0,0,0});
+        }
 
+        
 
 
         // Shooter Logic 

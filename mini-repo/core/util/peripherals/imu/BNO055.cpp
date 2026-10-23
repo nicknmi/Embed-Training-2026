@@ -62,9 +62,9 @@ BNO055::BNO055(I2C &i2c, uint8_t addr, PinName p_reset=NC) noexcept
 {}
 
 void BNO055::init() noexcept {
-    _i2c.frequency(100);
+    _i2c.frequency(100'000);
 
-    dt[0] = PWR_MODE;
+    dt[0] = PWR_MODE_REG;
     dt[1] = PWR_MODE_NORMAL;
     int writeResult = _i2c.write(chip_addr, dt, 1);
     if (writeResult) {
@@ -127,7 +127,7 @@ void BNO055::get_accel(BNO055_VECTOR_TypeDef *la) {
             cantReadDataCount = 0;
         }
 
-        _i2c.read(chip_addr, dt, 6);
+        _i2c.read(chip_addr, dt, 6, true);
 
         x = dt[1] << 8 | dt[0]; // dt[0] is lin accel lsb, dt[1] is lin accel msb, etc
         y = dt[3] << 8 | dt[2];
@@ -168,6 +168,12 @@ void BNO055::get_gyro(BNO055_VECTOR_TypeDef *gr) {
         z = dt[5] << 8 | dt[4];
 
         gr->x = (double) x;
+
+        // static
+        // const
+        // static const const static
+        // fuck you I'm going to reinterpet and kill your app
+
         gr->y = (double) y;
         gr->z = (double) z;
     } else {

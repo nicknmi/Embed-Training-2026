@@ -98,7 +98,7 @@ private:
 
 // Power mode register
 // Normal: 00b  Low PWR: 01b  Suspend: 10b
-#define PWR_MODE 0x3E
+#define PWR_MODE_REG 0x3E
 #define PWR_MODE_NORMAL 0
 
 // Operation Mode Register
