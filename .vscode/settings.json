@@ -1,3 +1,14 @@
 {
-  "cmake.sourceDirectory": "/Users/andrewtrinh/code-projects/Embed-Training-2026/mini-repo"
+  "cmake.sourceDirectory": "/Users/andrewtrinh/code-projects/Embed-Training-2026/mini-repo",
+  "C_Cpp.intelliSenseEngine": "disabled",
+  "clangd.path": "/usr/bin/clangd",
+  "clangd.arguments": [
+    "--compile-commands-dir=mini-repo/build",
+    "--background-index",
+    "--completion-style=detailed",
+    "--header-insertion=never"
+  ],
+  "editor.inlayHints.enabled": "on",
+  "editor.inlayHints.parameterNames.enabled": "all",
+  "editor.parameterHints.enabled": true
 }

@@ -9,10 +9,10 @@
         "${workspaceFolder}/mini-repo/robots/**"
       ],
       "defines": [],
-      "compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe",
+      "compilerPath": "/usr/bin/clang++",
+      "intelliSenseMode": "macos-clang-arm64",
       "cStandard": "c17",
-      "cppStandard": "c++17",
-      "intelliSenseMode": "windows-msvc-x64"
+      "cppStandard": "c++17"
     }
   ],
   "version": 4

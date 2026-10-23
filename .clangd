@@ -1,0 +1,10 @@
+CompileFlags:
+  CompilationDatabase: mini-repo/build
+
+InlayHints:
+  Enabled: Yes
+  ParameterNames: Yes
+  DeducedTypes: Yes
+  Designators: Yes
+
+
