@@ -62,7 +62,7 @@ BNO055::BNO055(I2C &i2c, uint8_t addr, PinName p_reset=NC) noexcept
 {}
 
 void BNO055::init() noexcept {
-    _i2c.frequency(100'000);
+    _i2c.frequency(100000);
 
     dt[0] = PWR_MODE_REG;
     dt[1] = PWR_MODE_NORMAL;
@@ -86,7 +86,7 @@ void BNO055::reset() noexcept {
     // fall back to reset bit on register if reset pin isn't available
     if (_res != NC) {
         dt[0] = SYS_TRIGGER;
-        dt[1] = 0b10000;
+        dt[1] = 0b00100000; 
         writeResult = _i2c.write(chip_addr, dt, 1);
 
         if (writeResult) printf("RESET FAIL");

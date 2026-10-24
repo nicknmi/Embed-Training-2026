@@ -206,6 +206,8 @@ class Infantry : public BaseRobot {
 
         switch (remote_.getMode()) {
             case (DJIRemote2::ModeSwitch::MODE_N): {
+                // set chassis speeds converts total chassis velocity vector into individual
+                // vectors for each motor
                 chassis_.setChassisSpeeds(
                     {des_chassis_state.vX, des_chassis_state.vY, vOmega},
                     ChassisSubsystem::DRIVE_MODE::ROBOT_ORIENTED
@@ -214,6 +216,7 @@ class Infantry : public BaseRobot {
             }
             case (DJIRemote2::ModeSwitch::MODE_S): break; // todo
             default:
+                // netural mode; turn off all chassis motors
                 chassis_.setWheelSpeeds({0,0,0,0});
         }
 

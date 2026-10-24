@@ -98,7 +98,11 @@ void TurretSubsystem::periodic(float chassisRpm)
     // TODO: What do you think the motors should be doing during sleep mode? 
     if (turret_state.turret_mode == SLEEP)
     {
-      
+        pitch.setPosition(0);
+        yaw.setPosition(0);
+
+        //pitch.setPower(0);
+        //yaw.setPower(0);
     }
     else if (turret_state.turret_mode == AIM) 
     {
@@ -106,16 +110,21 @@ void TurretSubsystem::periodic(float chassisRpm)
         float deltaYaw = calculateDeltaYaw(turret_state.yaw_angle_degs, des_yaw);
         
         if (std::isnan(deltaYaw) || std::isnan(turret_state.pitch_angle_degs)) { // TODO: Why would we get NAN for deltaYAW?
+            turret_state.yaw_angle_degs = 0;
+            des_yaw = 0;
+            
             turret_time = us_ticker_read();
             
             //TODO: What should the motors be doing?
+            yaw.setPosition(0);
+            pitch.setPosition(0);
 
             // Week 4/5 TODO: what should the PIDs do if we get a NAN? 
 
             return;
         }
-
-        int dir = 0; // TODO: What's the optimal way to turn if we have to increase our yaw or decrease our yaw? HINT: Set dir either to 1 or -1  
+        // TODO: What's the optimal way to turn if we have to increase our yaw or decrease our yaw? HINT: Set dir either to 1 or -1  
+        int dir = 1; // set dir to 1 to increase pid feed forward (faster motor movement)
         if      (deltaYaw >  0.0f) dir = 0;
         else if (deltaYaw <  0.0f) dir = 0;
         
@@ -134,7 +143,8 @@ void TurretSubsystem::periodic(float chassisRpm)
         // printf("yp %.2f | %.2f\n", des_yaw_power, deltaYaw);
         
         // TODO: What's going on above? What should we be doing with the yaw motor here?
-        
+        yaw.setPower(static_cast<int>(des_yaw_power));
+        yaw.setSpeed(des_yaw_velo);
 
 
         // Pitch calc
