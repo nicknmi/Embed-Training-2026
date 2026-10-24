@@ -199,9 +199,17 @@ class Infantry : public BaseRobot {
 
         // Chassis logic
         // TODO: ADD THE CHASSIS LOGIC HERE
+        
+        // ugly ass tangential velocity vector to angular velocity conversion
+        double vOmega = (WHEEL_TO_CHASSIS_CENTER_LX * des_chassis_state.vY - des_chassis_state.vY * WHEEL_TO_CHASSIS_CENTER_LX) / 
+                        (WHEEL_TO_CHASSIS_CENTER_LX*WHEEL_TO_CHASSIS_CENTER_LX + WHEEL_TO_CHASSIS_CENTER_LY*WHEEL_TO_CHASSIS_CENTER_LY);
+
         switch (remote_.getMode()) {
             case (DJIRemote2::ModeSwitch::MODE_N): {
-                chassis_.setChassisSpeeds(, ChassisSubsystem::DRIVE_MODE::ROBOT_ORIENTED);
+                chassis_.setChassisSpeeds(
+                    {des_chassis_state.vX, des_chassis_state.vY, vOmega},
+                    ChassisSubsystem::DRIVE_MODE::ROBOT_ORIENTED
+                    );
                 break;
             }
             case (DJIRemote2::ModeSwitch::MODE_S): break; // todo
