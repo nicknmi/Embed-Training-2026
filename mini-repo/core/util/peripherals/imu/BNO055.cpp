@@ -62,7 +62,7 @@ BNO055::BNO055(I2C &i2c, uint8_t addr, PinName p_reset=NC) noexcept
 {}
 
 void BNO055::init() noexcept {
-    _i2c.frequency(100000);
+    _i2c.frequency(100'000);
 
     dt[0] = PWR_MODE_REG;
     dt[1] = PWR_MODE_NORMAL;
@@ -133,9 +133,9 @@ void BNO055::get_accel(BNO055_VECTOR_TypeDef *la) {
         y = dt[3] << 8 | dt[2];
         z = dt[5] << 8 | dt[4];
 
-        la->x = (double) x;
-        la->y = (double) y;
-        la->z = (double) z;
+        la->x = (double) x / 100.0;
+        la->y = (double) y / 100.0;
+        la->z = (double) z / 100.0;
     } else {
         cantReadDataCount++;
     }
@@ -167,15 +167,9 @@ void BNO055::get_gyro(BNO055_VECTOR_TypeDef *gr) {
         y = dt[3] << 8 | dt[2];
         z = dt[5] << 8 | dt[4];
 
-        gr->x = (double) x;
-
-        // static
-        // const
-        // static const const static
-        // fuck you I'm going to reinterpet and kill your app
-
-        gr->y = (double) y;
-        gr->z = (double) z;
+        gr->x = (double) x / 16.0; // in deg per sec
+        gr->y = (double) y / 16.0;
+        gr->z = (double) z / 16.0;
     } else {
         cantReadDataCount++;
     }
