@@ -185,24 +185,32 @@ class Infantry : public BaseRobot {
 
         // Turret from remote
         // TODO: IMPLEMENT TURRET LOGIC HERE (Hint: update desired pitch and yaw from remote readings)
-        // yaw_desired_angle = ?
+        switch (remote_.getMode()) {
+            case (DJIRemote2::ModeSwitch::MODE_C):
+            case (DJIRemote2::ModeSwitch::MODE_S): {
+                //turret_.periodic(chassis_.getChassisSpeeds().vOmega);
+                yaw_desired_angle = jyaw;
+                pitch_desired_angle = jpitch;
 
+                float yaw_desired_velo = jyaw * JOYSTICK_YAW_SENSITIVITY_DPS * (PI/180.0); 
+                float pitch_desired_velo = jpitch * JOYSTICK_PITCH_SENSITIVITY_DPS * (PI/180.0);
 
+                // todo: calculate velo rad and other bs using joystick
+                des_turret_state = TurretSubsystem::TurretInfo{yaw_desired_angle,yaw_desired_velo,pitch_desired_angle,pitch_desired_velo, TurretState::AIM};
 
-
-        // pitch_desired_angle = ?
-
-
-
-
-
+                break;
+            }
+            default:  { // mode n switches robot off
+                des_turret_state = TurretSubsystem::TurretInfo{0,0,0,0, TurretState::SLEEP};
+            } 
+        }
 
         // Chassis logic
         // TODO: ADD THE CHASSIS LOGIC HERE
         
         // ugly ass tangential velocity vector to angular velocity conversion
         double vOmega = (WHEEL_TO_CHASSIS_CENTER_LX * des_chassis_state.vY - des_chassis_state.vY * WHEEL_TO_CHASSIS_CENTER_LX) / 
-                        (WHEEL_TO_CHASSIS_CENTER_LX*WHEEL_TO_CHASSIS_CENTER_LX + WHEEL_TO_CHASSIS_CENTER_LY*WHEEL_TO_CHASSIS_CENTER_LY);
+                        (1.0 * (WHEEL_TO_CHASSIS_CENTER_LX*WHEEL_TO_CHASSIS_CENTER_LX + WHEEL_TO_CHASSIS_CENTER_LY*WHEEL_TO_CHASSIS_CENTER_LY));
 
         switch (remote_.getMode()) {
             case (DJIRemote2::ModeSwitch::MODE_N): {

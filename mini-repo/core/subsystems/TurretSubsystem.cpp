@@ -110,14 +110,14 @@ void TurretSubsystem::periodic(float chassisRpm)
         float deltaYaw = calculateDeltaYaw(turret_state.yaw_angle_degs, des_yaw);
         
         if (std::isnan(deltaYaw) || std::isnan(turret_state.pitch_angle_degs)) { // TODO: Why would we get NAN for deltaYAW?
-            turret_state.yaw_angle_degs = 0;
-            des_yaw = 0;
+            //turret_state.yaw_angle_degs = 0;
+            //des_yaw = 0;
             
             turret_time = us_ticker_read();
             
             //TODO: What should the motors be doing?
-            yaw.setPosition(0);
-            pitch.setPosition(0);
+            yaw.setPower(0);
+            pitch.setPower(0);
 
             // Week 4/5 TODO: what should the PIDs do if we get a NAN? 
 
@@ -167,7 +167,7 @@ void TurretSubsystem::periodic(float chassisRpm)
         pitch.setSpeed(des_pitch_velo);
         float des_pitch_power = pitch.pidSpeed.calculate(des_pitch_velo, turret_state.pitch_velo_rad_s, static_cast<float>(us_ticker_read() - turret_time) / 1000);
         // printf("pp %.2f | %.2f\n", des_pitch_power, des_pitch-turret_state.pitch_angle_degs);
-        // pitch.setPower(des_pitch_power);
+        //pitch.setPower(des_pitch_power);
     }
 
     turret_time = us_ticker_read();

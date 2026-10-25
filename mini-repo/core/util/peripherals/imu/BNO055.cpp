@@ -84,7 +84,7 @@ void BNO055::init() noexcept {
 void BNO055::reset() noexcept {
     int writeResult;
     // fall back to reset bit on register if reset pin isn't available
-    if (_res != NC) {
+    if (_res == NC) {
         dt[0] = SYS_TRIGGER;
         dt[1] = 0b00100000; 
         writeResult = _i2c.write(chip_addr, dt, 1);
