@@ -195,7 +195,6 @@ class Infantry : public BaseRobot {
                 float yaw_desired_velo = jyaw * JOYSTICK_YAW_SENSITIVITY_DPS * (PI/180.0); 
                 float pitch_desired_velo = jpitch * JOYSTICK_PITCH_SENSITIVITY_DPS * (PI/180.0);
 
-                // todo: calculate velo rad and other bs using joystick
                 des_turret_state = TurretSubsystem::TurretInfo{yaw_desired_angle,yaw_desired_velo,pitch_desired_angle,pitch_desired_velo, TurretState::AIM};
 
                 break;
@@ -222,9 +221,14 @@ class Infantry : public BaseRobot {
                     );
                 break;
             }
-            case (DJIRemote2::ModeSwitch::MODE_S): break; // todo
+            case (DJIRemote2::ModeSwitch::MODE_S): {
+                chassis_.setChassisSpeeds(
+                    {des_chassis_state.vX, des_chassis_state.vY, vOmega}, 
+                    ChassisSubsystem::YAW_ORIENTED);
+                break;
+            }; 
             default:
-                // netural mode; turn off all chassis motors
+                // neutral mode; turn off all chassis motors
                 chassis_.setWheelSpeeds({0,0,0,0});
         }
 
