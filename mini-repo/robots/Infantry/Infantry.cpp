@@ -199,7 +199,8 @@ class Infantry : public BaseRobot {
 
                 break;
             }
-            default:  { // mode n switches robot off
+            default:  { 
+                // mode n switches robot off
                 des_turret_state = TurretSubsystem::TurretInfo{0,0,0,0, TurretState::SLEEP};
             } 
         }
@@ -207,24 +208,31 @@ class Infantry : public BaseRobot {
         // Chassis logic
         // TODO: ADD THE CHASSIS LOGIC HERE
         
-        // ugly ass tangential velocity vector to angular velocity conversion
-        double vOmega = (WHEEL_TO_CHASSIS_CENTER_LX * des_chassis_state.vY - des_chassis_state.vY * WHEEL_TO_CHASSIS_CENTER_LX) / 
-                        (1.0 * (WHEEL_TO_CHASSIS_CENTER_LX*WHEEL_TO_CHASSIS_CENTER_LX + WHEEL_TO_CHASSIS_CENTER_LY*WHEEL_TO_CHASSIS_CENTER_LY));
+        // ugly ass tangential velocity vector to angular velocity conversion (not needed lol)
+        // double vOmega = (WHEEL_TO_CHASSIS_CENTER_LX * des_chassis_state.vY - des_chassis_state.vY * WHEEL_TO_CHASSIS_CENTER_LX) / 
+        //                 (1.0 * (WHEEL_TO_CHASSIS_CENTER_LX*WHEEL_TO_CHASSIS_CENTER_LX + WHEEL_TO_CHASSIS_CENTER_LY*WHEEL_TO_CHASSIS_CENTER_LY));
 
         switch (remote_.getMode()) {
             case (DJIRemote2::ModeSwitch::MODE_N): {
                 // set chassis speeds converts total chassis velocity vector into individual
                 // vectors for each motor
+
                 chassis_.setChassisSpeeds(
-                    {des_chassis_state.vX, des_chassis_state.vY, vOmega},
+                    {des_chassis_state.vX, des_chassis_state.vY, 0.0},
                     ChassisSubsystem::DRIVE_MODE::ROBOT_ORIENTED
-                    );
+                );
                 break;
             }
             case (DJIRemote2::ModeSwitch::MODE_S): {
+                // chassis_.setChassisSpeeds(
+                //     {des_chassis_state.vX, des_chassis_state.vY, vOmega}, 
+                //     ChassisSubsystem::YAW_ORIENTED
+                // );
+                
                 chassis_.setChassisSpeeds(
-                    {des_chassis_state.vX, des_chassis_state.vY, vOmega}, 
-                    ChassisSubsystem::YAW_ORIENTED);
+                    {des_chassis_state.vX, des_chassis_state.vY, chassis_.m_OmniKinematicsLimits.max_vOmega}, 
+                    ChassisSubsystem::YAW_ORIENTED
+                );
                 break;
             }; 
             default:
