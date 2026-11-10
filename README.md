@@ -161,7 +161,7 @@ If that doesn't work, try `cmake -S mini-repo -B mini-repo/build -G Ninja`
 
 ## 4. Quality of Life Extensions
 
-This part is assuming you're on VScode, but I imagine that if you're on some other IDE, you'll very likely have some analogs for these. These are arranged in order of most to least useful. Clangd is really the only one you need now, but the others are nice to have for when you start working on your capstone
+This part is assuming you're on VScode, but I imagine that if you're on some other IDE, you'll very likely have some analogs for these. These are arranged in order of most to least useful. Clangd is really the only one you need now, but the others are nice to have for when you start working on your capstone.
 
 
 ### 1. Clangd
